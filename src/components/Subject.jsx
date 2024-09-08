@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 // import React from 'react';
+import { toast } from 'react-toastify';
 
 function Subject({ index, subject, onSubjectChange }) {
   const handleInputChange = (event) => {
@@ -9,6 +10,15 @@ function Subject({ index, subject, onSubjectChange }) {
 
   const handleGradeChange = (event) => {
     onSubjectChange(index, { ...subject, grade: event.target.value });
+  };
+
+  const handleCreditChange = (event) => {
+    const value = event.target.value;
+    if (parseFloat(value) > 10) {
+      toast.error("أنت رايح فين يعم");
+      return;
+    }
+    onSubjectChange(index, { ...subject, credit: value });
   };
 
   return (
@@ -37,8 +47,9 @@ function Subject({ index, subject, onSubjectChange }) {
           type="number"
           name="credit"
           value={subject.credit}
-          onChange={handleInputChange}
+          onChange={handleCreditChange}
           placeholder="Credits"
+          max="10"  // Set maximum credit value here
           className="border p-2 rounded w-full text-sm"
         />
       </div>
