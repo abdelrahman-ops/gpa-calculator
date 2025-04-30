@@ -1,128 +1,127 @@
-import  { useState } from 'react';
-import Semester from './components/Semester';
-import GpaResult from './components/GpaResult';
-import { ToastContainer, toast } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import SemesterList from './components/gpa/SemesterList';
+import useGpaCalculator from './components/hooks/useGpaCalculator';
+// import GradeScaleModal from './components/gpa/GradeScaleModal';
+import GpaResultsPanel from './components/gpa/GpaResultsPanel';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import QuickTips from './components/tips/QuickTips';
+import CalculationInfo from './components/gpa/CalculationInfo';
+import { Toaster } from 'react-hot-toast';
+// import WhatIfCalculator from './components/gpa/WhatIfCalculator';
+// Color constants for easy maintenance
+const COLORS = {
+    primary: 'from-indigo-600 to-violet-700',
+    secondary: 'from-slate-900 to-gray-800',
+    background: 'from-gray-50 to-gray-100',
+    card: 'bg-white',
+    highlight: 'text-violet-600',
+    muted: 'text-gray-600'
+};
 
 function App() {
-  const [semesters, setSemesters] = useState([{ subjects: Array(3).fill({ grade: '', credit: '' }) }]);
-  const [cumulativeGpa, setCumulativeGpa] = useState(null);
+    const {
+        semesters,
+        addSemester,
+        removeSemester,
+        updateSemester,
+        addSubject,
+        removeSubject,
+        updateSubject,
+        calculateGpa
+    } = useGpaCalculator();
 
-  const addSemester = () => {
-    setSemesters([...semesters, { subjects: Array(3).fill({ grade: '', credit: '' }) }]);
-  };
+    const [results, setResults] = useState(null);
+    // const [showGradeScale, setShowGradeScale] = useState(false);
 
-  const calculateCumulativeGpa = () => {
-    let totalCredits = 0;
-    let weightedSum = 0;
-
-    semesters.forEach((semester) => {
-      semester.subjects.forEach((subject) => {
-        const gradeValue = getGradeValue(subject.grade);
-        const credit = parseFloat(subject.credit);
-
-        if (gradeValue !== null && !isNaN(credit)) {
-          totalCredits += credit;
-          weightedSum += gradeValue * credit;
-        }
-      });
-    });
-
-    const calculatedGpa = totalCredits > 0 ? (weightedSum / totalCredits).toFixed(2) : null;
-    setCumulativeGpa(calculatedGpa);
-  };
-
-  const updateSemester = (index, updatedSubjects) => {
-    const newSemesters = [...semesters];
-    newSemesters[index].subjects = updatedSubjects;
-    setSemesters(newSemesters);
-  };
-
-  const getGradeValue = (grade) => {
-    const gradeMap = {
-      'A+': 4.00,
-      'A': 4.00,
-      'A-': 3.70,
-      'B+': 3.30,
-      'B': 3.00,
-      'B-': 2.70,
-      'C+': 2.30,
-      'C': 2.00,
-      'C-': 1.70,
-      'D+': 1.30,
-      'D': 1.00,
-      'F': 0.00
+    const handleCalculate = () => {
+        setResults(calculateGpa());
     };
-  
-    return gradeMap[grade.toUpperCase()] || null;
-  };
+    console.log(results);
+    
 
-  const totalCredits = semesters.reduce((sum, semester) => 
-    sum + semester.subjects.reduce((subjectSum, subject) => subjectSum + (parseFloat(subject.credit) || 0), 0), 0);
+    
 
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-between">
-      <div className="flex-grow">
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl mx-auto mt-8">
-          <h1 className="text-2xl font-bold mb-4">Cumulative GPA Calculator</h1>
+    return (
+        <AnimatePresence mode='wait'>
+            <div className={`min-h-screen bg-gradient-to-br ${COLORS.background} flex flex-col`}>
+                <Header />
+                {/* <Header onShowGradeScale={() => setShowGradeScale(true)} /> */}
+                
+                <motion.main
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex-grow container mx-auto px-4 py-8"
+                >
+                    <div className="max-w-7xl mx-auto">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            <div className="lg:col-span-8">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                    
+                                >
+                                    <SemesterList
+                                        semesters={semesters}
+                                        onAddSemester={addSemester}
+                                        onRemoveSemester={removeSemester}
+                                        onUpdateSemester={updateSemester}
+                                        onAddSubject={addSubject}
+                                        onRemoveSubject={removeSubject}
+                                        onSubjectChange={updateSubject}
+                                        onCalculate={handleCalculate}
+                                    />
+                                </motion.div>
+                            </div>
 
-          {semesters.map((semester, index) => (
-            <Semester
-              key={index}
-              index={index}
-              subjects={semester.subjects}
-              onUpdateSemester={updateSemester}
-              calculateSemesterGpa={(subjects) => {
-                let totalCredits = 0;
-                let weightedSum = 0;
+                            <div className="lg:col-span-4 space-y-6">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    <GpaResultsPanel results={results} semesters={semesters} />
+                                </motion.div>
+                                <QuickTips />
+                                <CalculationInfo />
+                            </div>
+                        </div>
+                    </div>
+                </motion.main>
+                {/* <WhatIfCalculator results={results} /> */}
+                
+                <Footer />
 
-                subjects.forEach((subject) => {
-                  const gradeValue = getGradeValue(subject.grade);
-                  const credit = parseFloat(subject.credit);
-
-                  if (gradeValue !== null && !isNaN(credit)) {
-                    totalCredits += credit;
-                    weightedSum += gradeValue * credit;
-                  }
-                });
-
-                return totalCredits > 0 ? (weightedSum / totalCredits).toFixed(2) : null;
-              }}
-            />
-          ))}
-
-          <button
-            onClick={addSemester}
-            className="w-full bg-purple-500 text-white p-2 rounded hover:bg-purple-600"
-          >
-            Add Another Semester
-          </button>
-
-          <button
-            onClick={calculateCumulativeGpa}
-            className="w-full bg-green-500 text-white p-2 rounded mt-4 hover:bg-green-600"
-          >
-            Calculate Cumulative GPA
-          </button>
-
-          <p className="text-sm mt-4">
-            Total Credits Across All Semesters: {totalCredits.toFixed(2)}
-          </p>
-
-        {cumulativeGpa && <GpaResult cumulativeGpa={cumulativeGpa} />}
-        {cumulativeGpa && <GpaResult cumulativeGpa={cumulativeGpa} />}
-          {cumulativeGpa && <GpaResult cumulativeGpa={cumulativeGpa} />}
-        </div>
-      </div>
-
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        <p>&copy; 2024 Cumulative GPA Calculator. All rights reserved.</p>
-        <p>عبدالرحمن</p>
-      </footer>
-
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
-    </div>
-  );
+                    <Toaster
+                    position="top-center"
+                    toastOptions={{
+                        success: {
+                            style: {
+                                background: 'green',
+                                color: 'white',
+                            },
+                            iconTheme: {
+                                primary: 'white',
+                                secondary: 'green',
+                            },
+                        },
+                        error: {
+                            style: {
+                                background: 'red',
+                                color: 'white',
+                            },
+                        },
+                    }}
+                />
+            </div>
+            
+        </AnimatePresence>
+    );
 }
 
 export default App;
