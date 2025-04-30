@@ -194,7 +194,7 @@ const useGpaCalculator = () => {
 
         // Show all validation errors
         if (errorMessages.length > 0) {
-            errorMessages.forEach(msg => toast.error(msg, { duration: 5000 }));
+            errorMessages.forEach(msg => toast.error(msg, { duration: 2000 }));
         }
 
         const cumulativeGpa = hasErrors 

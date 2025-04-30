@@ -6,7 +6,7 @@ const CalculationInfo = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-100">
+    <div className="mt-6 bg-blue-50 rounded-2xl p-4 border border-blue-100">
       <button 
         className="w-full flex justify-between items-center focus:outline-none"
         onClick={() => setIsExpanded(!isExpanded)}

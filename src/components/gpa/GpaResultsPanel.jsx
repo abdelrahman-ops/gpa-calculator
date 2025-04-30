@@ -5,7 +5,7 @@ import Card from "../common/Card";
 const GpaResultsPanel = ({ results }) => {
     if (!results) {
       return (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">
           <p className="text-blue-800">Enter your grades and credits, then click "Calculate GPA"</p>
         </div>
       );

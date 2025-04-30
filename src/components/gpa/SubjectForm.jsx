@@ -11,23 +11,22 @@ const SubjectForm = ({ subject, onChange, onRemove }) => {
 
   const handleCreditChange = (e) => {
     const value = e.target.value;
-    // Allow numbers and .5 increments
     if (/^\d*\.?[05]?$/.test(value) || value === '') {
       onChange({ credit: value });
     }
   };
 
   return (
-    <div className="mb-4 p-4 bg-gray-50 rounded-lg relative group">
+    <div className="mb-4 p-4 bg-gray-100 rounded-xl border border-gray-200 relative group">
       <button
         onClick={onRemove}
-        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity md:w-5 md:h-5"
       >
         &times;
       </button>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="sm:col-span-2 lg:col-span-1">
           <Input
             label="Subject Name"
             value={subject.name}
@@ -56,6 +55,7 @@ const SubjectForm = ({ subject, onChange, onRemove }) => {
               { value: 'D', label: 'D' },
               { value: 'F', label: 'F' }
             ]}
+            // menuPortalTarget={document.body}
           />
         </div>
         

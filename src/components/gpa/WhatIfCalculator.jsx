@@ -115,7 +115,7 @@ const WhatIfCalculator = ({ results , semesters}) => {
       {selectedSemester?.subjects?.length > 0 ? (
         <div className="space-y-3 mb-4">
           {selectedSemester.subjects.map(subject => (
-            <div key={subject.id} className="p-3 bg-gray-50 rounded-md">
+            <div key={subject.id} className="p-3 bg-gray-50 rounded-2xl">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">
                   {subject.name || `Course ${subject.id.slice(0, 4)}`}

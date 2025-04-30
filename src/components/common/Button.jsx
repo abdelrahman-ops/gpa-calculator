@@ -9,7 +9,7 @@ const Button = ({ children, onClick, variant = 'primary', className = '', ...pro
 
     return (
     <button
-        className={`px-4 py-2 rounded-md font-medium transition-colors ${variants[variant]} ${className}`}
+        className={`px-4 py-2 rounded-xl font-medium transition-colors ${variants[variant]} ${className}`}
         onClick={onClick}
         {...props}
     >
